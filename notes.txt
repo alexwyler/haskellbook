@@ -1,0 +1,3 @@
+let vs where
+- let is similar to other functional languages
+- let is an expression you could put someplace else; where is not

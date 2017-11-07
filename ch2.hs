@@ -60,14 +60,13 @@ Equivalent Expressions
   (not same)
 
 More fun with functions
+
 z = 7
-
 x = y ^ 2
-
 waxOn = x * 5
-
 y = z + 8
 
+REPL:
 let z = 7
 let y = z + 8
 let x = y ^ 2
