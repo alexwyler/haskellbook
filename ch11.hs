@@ -1,14 +1,16 @@
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE FlexibleInstances #-}
 
+
+
 module Ch11 where
   import Data.Int
   import Data.Char
   import Data.Maybe
   import Data.List
-
+  
   data Doggies a = 
-    Husky a
+      Husky a
     | Mastiff a
     deriving (Eq, Show)
 
@@ -47,19 +49,19 @@ DogueDeBordeaux String
     deriving (Eq, Show)
 
   data Manufacturer =
-    Mini
+      Mini
     | Mazda
     | Tata
     deriving (Eq, Show)
 
   data Airline =
-    PapuAir
+      PapuAir
     | CatapultsR'Us
     | TakeYourChancesUnited
     deriving (Eq, Show)
 
   data Vehicle = 
-    Car Manufacturer Price
+      Car Manufacturer Price
     | Plane Airline
     deriving (Eq, Show)
 
@@ -113,7 +115,8 @@ Vehicle
     tooMany (a, b) = a + b > 42
 
   instance (Num a, TooMany a) => TooMany (a, a) where
-    tooMany (a, b) = tooMany (a + b)
+    tooMany (b, c) = tooMany (b + c)
+
 {-|
 *Ch11> tooMany (IntStringTuple (50, "hello"))
 True
@@ -135,13 +138,14 @@ True
     • In the expression: tooMany (10 :: Int, 20 :: Int)
       In an equation for ‘it’: it = tooMany (10 :: Int, 20 :: Int)
 -}
+
   data BigSmall =
-    Big Bool
+      Big Bool
     | Small Bool
     deriving (Eq, Show)
   
   data NumberOrBool =
-    Numba Int8
+      Numba Int8
     | BoolyBool Bool
     deriving (Eq, Show)
 {-|
@@ -157,7 +161,7 @@ Exercises: Pity the Bool
 -}
 
   data QuantumBool = 
-    QuantumTrue
+      QuantumTrue
     | QuantumFalse
     | QuantumBoth
     deriving (Eq, Show)
@@ -186,12 +190,12 @@ Exercises: Pity the Bool
   --data Author = Author (AuthorName, BookType)
 
   data Author =
-    Fiction AuthorName
+      Fiction AuthorName
     | Nonfiction AuthorName
     deriving (Eq, Show)
 
   data FlowerType = 
-    Gardenia
+      Gardenia
     | Daisy
     | Rose
     | Lilac
@@ -202,6 +206,7 @@ Exercises: Pity the Bool
   data Garden =
     Garden Gardener FlowerType
     deriving Show
+
   {-|
   Exercises: How Does Your Garden Grow?
 
@@ -367,7 +372,7 @@ Exercises: Pity the Bool
   yusssss = notQuite False
 
   newtype Name'  = Name String deriving Show
-  newtype Acres = Acres Int deriving Show
+  newtype Acres  = Acres Int deriving Show
   
   -- FarmerType is a Sum
   data FarmerType = 
@@ -423,16 +428,13 @@ Both  -> Both
 
 ...
 
-
 -}
-
 
   data Quantum =
       Yes
     | No
     | Both
     deriving (Eq, Show)
-
 
   quantSum1 :: Either Quantum Quantum
   quantSum1 = Right Yes
@@ -571,7 +573,7 @@ constrain the variable in the type signature(s) for the function(s) that will pr
     | b > a  = Node left a (insert' b right)
 
   mapTree :: (a -> b) -> BinaryTree a -> BinaryTree b
-  mapTree _ Leaf = Leaf
+  mapTree _ Leaf                = Leaf
   mapTree f (Node left a right) = Node (mapTree f left) (f a) (mapTree f right)
 
   testTree' :: BinaryTree Integer
@@ -586,15 +588,15 @@ constrain the variable in the type signature(s) for the function(s) that will pr
     else error "test failed!"
 
   preorder :: BinaryTree a -> [a]
-  preorder Leaf = []
+  preorder Leaf                = []
   preorder (Node left a right) = [a] ++ (preorder left) ++ (preorder right)
   
   inorder :: BinaryTree a -> [a]
-  inorder Leaf = []
+  inorder Leaf                = []
   inorder (Node left a right) = (preorder left) ++ [a] ++ (preorder right)
 
   postorder :: BinaryTree a -> [a]
-  postorder Leaf = []
+  postorder Leaf                = []
   postorder (Node left a right) = (preorder left) ++ (preorder right) ++ [a]
 
   testTree :: BinaryTree Integer
@@ -619,6 +621,11 @@ constrain the variable in the type signature(s) for the function(s) that will pr
   foldTree :: (a -> b -> b) -> b -> BinaryTree a -> b
   foldTree f z x = foldr f z (inorder x)
   -- how to do it without converting to list?
+
+  -- foldTree' :: (a -> b -> b) -> b -> BinaryTree a -> b
+  -- foldTree' _ z Leaf                = z
+  -- foldTree' f z (Node left a right) = 
+  --   foldr f (foldr f z left) right
 
 {-|
 1. Given the following datatype:
@@ -647,17 +654,17 @@ c) delivers the final element of xs
 
   vCipher :: String -> String -> String
   vCipher text key = 
-      [doOffset letter offsetLetter | (letter, offsetLetter) <- zipped]
+      [doOffset a b | (a, b) <- zipped]
     where
+      zipped = zip text (cycle key)
       doOffset a b = 
         chr (wrappedSum + startInt)
         where
-          aInt = (ord a) - startInt
-          bInt = (ord b) - startInt
-          sum' = (aInt + bInt)
+          aInt       = (ord a) - startInt
+          bInt       = (ord b) - startInt
+          sum'       = (aInt + bInt)
           wrappedSum = mod sum' 26
-          startInt = ord 'A'
-      zipped = zip text (cycle  key)
+          startInt   = ord 'A'
 
 {-|
 *Ch11> vCipher "MEETATDOWN" "ALLY"
@@ -669,10 +676,10 @@ c) delivers the final element of xs
 -}
 
   isSubseqOf :: (Eq a) => [a] -> [a] -> Bool
-  isSubseqOf _ [] = False
-  isSubseqOf needle haystack@(x:xs) = 
-    if needle == take (length needle) haystack then True
-    else isSubseqOf needle xs
+  isSubseqOf _ []                             = False
+  isSubseqOf needle list@(x:xs) 
+    | needle == take (length needle) list = True
+    | otherwise                           = isSubseqOf needle xs
 
 {-|
 *Ch11> isSubseqOf "blah" "blahwoot"
@@ -684,54 +691,58 @@ False
 {-|
 2. Split a sentence into words, then tuple each word with the capitalized form of each.
 -}
+
   capitalizeWords :: String -> [(String, String)]
   capitalizeWords xs = [(word, capitalizeWord word) | word <- split xs ' ']
 
   capitalizeWord :: String -> String
-  capitalizeWord ""     = ""
-  capitalizeWord (x:xs) = 
-    if x == ' ' then (" "  ++ capitalizeWord xs)
-    else (toUpper x) : xs
+  capitalizeWord []       = []
+  capitalizeWord (x:xs)   = (toUpper x) : xs
 
-  split :: String -> Char -> [String]
-  split "" _       = []
-  split xs delim   = 
-    word : (split remainderClean delim)
+  split :: Eq a => [a] -> a -> [[a]]
+  split [] _       = []
+  split xs delim   = word : (split remainder delim)
     where
-      word = takeWhile ((/=) delim) xs
-      remainder = dropWhile ((/=) delim) xs
-      remainderClean = if remainder == "" then "" else (tail remainder)
+      word      = takeWhile ((/=) delim) xs
+      remainder = dropWhile ((==) delim) $ dropWhile ((/=) delim) xs
+
+  join :: a -> [a] -> [a] -> [a]
+  join delim a [] = a
+  join delim [] b = b
+  join delim a b  = a ++ [delim] ++ b
 
 {-|
 *Ch11> capitalizeWords "hello! man"
 [("hello!","Hello!"),("man","Man")]
 -}
 
-  capitalizeParagraph :: String -> String
-  capitalizeParagraph ""        = ""
-  capitalizeParagraph paragraph = (capitalizeWord firstSentence) ++ "." ++ (capitalizeParagraph remainderClean)
-    where
-      firstSentence = takeWhile ((/=) '.') paragraph
-      remainder = dropWhile ((/=) '.') paragraph
-      remainderClean = 
-        if remainder == "" then "" 
-        else tail remainder
+  -- capitalizeParagraph :: String -> String
+  -- capitalizeParagraph ""        = ""
+  -- capitalizeParagraph paragraph = 
+  --   (capitalizeWord sentence) ++ "." ++ (capitalizeParagraph remainder)
+  --   where
+  --     sentence = takeWhile ((/=) '.') paragraph
+  --     remainder = dropWhile ((==) '.') $ dropWhile ((/=) '.') paragraph
+
+  capitalizeParagraph' :: String -> String
+  capitalizeParagraph' paragraph = foldr (join ' ') [] $ map capitalizeWord $ split paragraph ' '
+
 
 {-|
-*Ch11> capitalizeParagraph "blah. woot ha."
+*Ch11> capitalizeParagraph' "blah. woot ha."
 "Blah. Woot ha."
 -}
 
 {-|
------------------------------------------ 
-|1 |2ABC |3DEF | 
-_________________________________________ 
-|4GHI|5JKL |6MNO |
------------------------------------------ 
-|7PQRS|8TUV |9WXYZ |
------------------------------------------ 
-|*^|0+_|#., |
------------------------------------------
+------------------- 
+|1    |2ABC |3DEF | 
+------------------- 
+|4GHI |5JKL |6MNO |
+------------------- 
+|7PQRS|8TUV |9WXYZ|
+-------------------
+|*^.  |0+_  |#.,  |
+-------------------
 Where star (*) gives you capitalization of the letter you’re writing to your friends, and 0 is your space bar.
 
 1. Create a data structure that captures the phone layout above. 
@@ -743,18 +754,21 @@ hat you can use it to dictate the behavior of the functions in the following exe
     DaPhone [(Char,String)]
     deriving (Eq, Show)
 
-  phone = DaPhone [
-    ('1', []),
-    ('2', "abc"),
-    ('3', "def"),
-    ('4', "ghi"),
-    ('5', "jkl"),
-    ('6', "mno"),
-    ('7', "pqrs"),
-    ('8', "tuv"),
-    ('9', "wyxz"),
-    ('0', " "),
-    ('*', "^")]
+  phoneLayout = [
+    ('1', "1"),
+    ('2', "abc2"),
+    ('3', "def3"),
+    ('4', "ghi4"),
+    ('5', "jkl5"),
+    ('6', "mno6"),
+    ('7', "pqrs7"),
+    ('8', "tuv8"),
+    ('9', "wyxz9"),
+    ('0', "+ 0"),
+    ('*', "^"),
+    ('#', ".,#")]
+
+  phone = DaPhone phoneLayout
 
   -- validButtons = "1234567890*#"
   type Digit = Char
@@ -767,27 +781,33 @@ hat you can use it to dictate the behavior of the functions in the following exe
 
   tapsForChar :: DaPhone -> Char -> [(Digit, Presses)]
   tapsForChar (DaPhone ((digit, chars) : xs)) c =
-    case isLower of
-      True ->
-        case indexOf of
-          Nothing -> tapsForChar (DaPhone xs) c
-          Just index -> [(digit, index + 1)] 
-        where
-          indexOf = elemIndex c chars
-      False ->
-        (tapsForShift phone) : (tapsForChar phone (toLower c))
-    where
-      isLower = toLower c == c
-  tapsForChar _ _ = []
+    if toLower c == c then
+      case elemIndex c chars of
+        Nothing -> tapsForChar (DaPhone xs) c
+        Just index -> [(digit, index + 1)]  
+    else
+      (tapsForShift phone) : (tapsForChar phone (toLower c))
+  tapsForChar _ _ = undefined
 
+  tapsForChar' :: DaPhone -> Char -> [(Digit, Presses)]
+  tapsForChar' (DaPhone list) c =
+    if toLower c == c then
+      let
+        entry = head $ dropWhile tapNoHasChar list
+        tapNoHasChar (a,b) = elemIndex c b == Nothing
+      in
+        case elemIndex c (snd entry) of
+          Just num -> [(fst entry, num + 1)]
+          Nothing  -> undefined
+    else
+      (tapsForShift phone) : (tapsForChar phone (toLower c))
 
   tapsForSentence :: DaPhone -> String -> [(Digit, Presses)]
   tapsForSentence _ []         = []
   tapsForSentence phone (x:xs) = (tapsForChar phone x) ++ (tapsForSentence phone xs)
 
-  --  -- assuming the default phone definition
-  --  -- 'a' -> [('2', 1)]
-  --  -- 'A' -> [('*', 1), ('2', 1)]
+  tapsForSentence' :: DaPhone -> String -> [(Digit, Presses)]
+  tapsForSentence' phone sentence = foldr (++) [] $ map (tapsForChar phone) sentence
 
   convo :: [String]
   convo =
@@ -804,6 +824,67 @@ hat you can use it to dictate the behavior of the functions in the following exe
   tapsForConvo :: [[(Digit, Presses)]]
   tapsForConvo = map (tapsForSentence phone) convo
 
+-------------------------------------------------------------------
+  treeMapGet :: (Eq a, Ord a) => BinaryTree (a, b) -> a -> Maybe b
+  treeMapGet (Node left (c, d) right) e
+    | e == c        = Just d
+    | e < c         = treeMapGet left e
+    | otherwise     = treeMapGet right e
+  treeMapGet Leaf _ = Nothing
+
+  treeMapPut :: (Eq a, Ord a) => a -> b -> BinaryTree (a, b) -> BinaryTree (a, b)
+  treeMapPut c d (Node left (a, b) right)
+    | c == a          = Node left (c, d) right
+    | c < a           = Node (treeMapPut c d left) (a, b) right
+    | c > a           = Node left (a, b) (treeMapPut c d right)
+  treeMapPut a b Leaf = Node Leaf (a, b) Leaf
+
+  phoneMap = foldr accumToTree Leaf layout
+    where
+    accumToTree (tap, chars) tree = 
+      foldr accumToTree' tree charsAndNums
+      where
+        charsAndNums = zip chars [1..]
+        accumToTree' (char, num) tree = treeMapPut char (tap, num) tree
+    layout = [
+      ('1', "1"),
+      ('2', "abc2" ),
+      ('3', "def3" ),
+      ('4', "ghi4" ),
+      ('5', "jkl5" ),
+      ('6', "mno6" ),
+      ('7', "pqrs7"),
+      ('8', "tuv8" ),
+      ('9', "wyxz9"),
+      ('0', "+ 0"  ),
+      ('*', "^"    ),
+      ('#', ".,#"  )]
+  
+  data DaPhone' = 
+    DaPhone' (BinaryTree (Char, (Digit, Presses)))
+    deriving (Eq, Show)
+
+  phone' = DaPhone' phoneMap
+
+  tapsForShift' :: DaPhone' -> (Digit, Presses)
+  tapsForShift' (DaPhone' tree) = 
+    case treeMapGet tree '^' of
+      Just a  -> a
+      Nothing -> undefined
+
+  tapsForChar'' :: DaPhone' -> Char -> [(Digit, Presses)]
+  tapsForChar'' (DaPhone' tree) c =
+    if toLower c == c then
+      case treeMapGet tree c of
+        Just a  -> [a]
+        Nothing -> undefined 
+    else
+      (tapsForShift' phone') : (tapsForChar'' phone' (toLower c))
+
+  tapsForSentence'' :: DaPhone' -> String -> [(Digit, Presses)]
+  tapsForSentence'' phone' sentence = foldr (++) [] $ map (tapsForChar'' phone') sentence
+
+
 -- 3. How many times do digits need to be pressed for each message?
 
   sumTaps :: (Digit, Presses) -> Presses -> Presses
@@ -812,67 +893,33 @@ hat you can use it to dictate the behavior of the functions in the following exe
   fingerTaps :: String -> Presses
   fingerTaps sentence = foldr sumTaps 0 (tapsForSentence phone sentence)
 
-  mostPopularLetter :: String -> Char
-  mostPopularLetter xs = fst $ foldr takeBigger ('a', 0) xs
-    where
-      counts = [(c, (countLetter xs c)) | c <- xs]
-      takeBigger :: Char -> (Char, Int) -> (Char, Int)
-      takeBigger c1 (c2, count2) = 
-        case countAndChar of
-          (_, count1) -> 
-            if count1 > count2 then
-            (c1, count1) else
-            (c2, count2)
-        where
-          countAndChar = (c1, countLetter xs c1)
-
-  countLetter :: String -> Char -> Int
-  countLetter [] _ = 0
-  countLetter xs c =
-    case remainder == "" of
-      True -> 0
-      False -> 1 + (countLetter remainderClean c)
-    where
-      remainder = dropWhile ((/=) c) xs
-      remainderClean = if remainder == "" then "" else tail remainder
-
   coolestLtr :: [String] -> Char
-  coolestLtr sentences = 
-    mostPopularLetter paragraph
-    where
-      paragraph = foldr (++) "" sentences
-
-  mostPopularElement :: [String] -> String
-  mostPopularElement l@(x:xs) = fst $ foldr takeBigger (x, 1) l
-    where
-      counts = [(c, (countElement l c)) | c <- l]
-      takeBigger :: String -> (String, Int) -> (String, Int)
-      takeBigger c1 (c2, count2) = 
-        case countAndElement of
-          (_, count1) -> 
-            if count1 > count2 then
-            (c1, count1) else
-            (c2, count2)
-        where
-          countAndElement = (c1, countElement l c1)
-
-  countElement :: [String] -> String -> Int
-  countElement [] _ = 0
-  countElement xs c =
-    case remainder == [] of
-      True -> 0
-      False -> 1 + (countElement remainderClean c)
-    where
-      remainder = dropWhile ((/=) c) xs
-      remainderClean = if remainder == [] then [] else tail remainder
+  coolestLtr sentences = mostPopularElem $ foldr (++) "" sentences
 
   coolestWord :: [String] -> String
-  coolestWord sentences = 
-    mostPopularElement words
+  coolestWord sentences =
+    mostPopularElem words
     where
       words = foldr concatWords [] sentences
       concatWords :: String -> [String] -> [String]
       concatWords sentence words = (split sentence ' ') ++ words
+
+  countElem :: Eq a => [a] -> a -> Int
+  countElem xs c = length $ filter ((==) c) xs
+
+  indexOf :: Eq a => a -> [a] -> Maybe Int
+  indexOf a list = 
+    if length filtered > 0 then Just $ head filtered
+    else Nothing
+    where
+      filtered = [ i | (x,i) <- zip list [0..], x == a]
+
+  mostPopularElem :: Eq a => [a] -> a
+  mostPopularElem xs@(x:_) = fst $ foldr (choose . convert) (x, 0) xs
+    where
+      convert c1 = (c1, countElem xs c1)
+      choose (c1, n1) (c2, n2) = 
+        if n2 > n1 then (c2, n2) else (c1, n1)
 
 -- Hutton's Razor
 
