@@ -1,14 +1,12 @@
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE FlexibleInstances #-}
 
-
-
 module Ch11 where
   import Data.Int
   import Data.Char
   import Data.Maybe
   import Data.List
-  
+
   data Doggies a = 
       Husky a
     | Mastiff a
@@ -676,7 +674,7 @@ c) delivers the final element of xs
 -}
 
   isSubseqOf :: (Eq a) => [a] -> [a] -> Bool
-  isSubseqOf _ []                             = False
+  isSubseqOf _ []                         = False
   isSubseqOf needle list@(x:xs) 
     | needle == take (length needle) list = True
     | otherwise                           = isSubseqOf needle xs
@@ -693,40 +691,39 @@ False
 -}
 
   capitalizeWords :: String -> [(String, String)]
-  capitalizeWords xs = [(word, capitalizeWord word) | word <- split xs ' ']
+  capitalizeWords xs = [(word, capitalizeWord word) | word <- split ' ' xs]
 
   capitalizeWord :: String -> String
   capitalizeWord []       = []
   capitalizeWord (x:xs)   = (toUpper x) : xs
 
-  split :: Eq a => [a] -> a -> [[a]]
-  split [] _       = []
-  split xs delim   = word : (split remainder delim)
+  split :: Eq a => a -> [a] -> [[a]]
+  split _ []       = []
+  split delim xs   = word : (split delim remainder)
     where
       word      = takeWhile ((/=) delim) xs
       remainder = dropWhile ((==) delim) $ dropWhile ((/=) delim) xs
 
-  join :: a -> [a] -> [a] -> [a]
-  join delim a [] = a
-  join delim [] b = b
-  join delim a b  = a ++ [delim] ++ b
+  combineWith :: a -> [a] -> [a] -> [a]
+  combineWith delim a [] = a
+  combineWith delim [] b = b
+  combineWith delim a b  = a ++ [delim] ++ b
 
 {-|
 *Ch11> capitalizeWords "hello! man"
 [("hello!","Hello!"),("man","Man")]
 -}
 
-  -- capitalizeParagraph :: String -> String
-  -- capitalizeParagraph ""        = ""
-  -- capitalizeParagraph paragraph = 
-  --   (capitalizeWord sentence) ++ "." ++ (capitalizeParagraph remainder)
-  --   where
-  --     sentence = takeWhile ((/=) '.') paragraph
-  --     remainder = dropWhile ((==) '.') $ dropWhile ((/=) '.') paragraph
+  capitalizeParagraph :: String -> String
+  capitalizeParagraph ""        = ""
+  capitalizeParagraph paragraph = 
+    (capitalizeWord sentence) ++ "." ++ (capitalizeParagraph remainder)
+    where
+      sentence = takeWhile ((/=) '.') paragraph
+      remainder = dropWhile ((==) '.') $ dropWhile ((/=) '.') paragraph
 
-  capitalizeParagraph' :: String -> String
-  capitalizeParagraph' paragraph = foldr (join ' ') [] $ map capitalizeWord $ split paragraph ' '
-
+  -- capitalizeParagraph' :: String -> String
+  -- capitalizeParagraph' paragraph = foldr (combineWith '.') [] $ map capitalizeWord $ split '.' paragraph
 
 {-|
 *Ch11> capitalizeParagraph' "blah. woot ha."
@@ -884,7 +881,6 @@ hat you can use it to dictate the behavior of the functions in the following exe
   tapsForSentence'' :: DaPhone' -> String -> [(Digit, Presses)]
   tapsForSentence'' phone' sentence = foldr (++) [] $ map (tapsForChar'' phone') sentence
 
-
 -- 3. How many times do digits need to be pressed for each message?
 
   sumTaps :: (Digit, Presses) -> Presses -> Presses
@@ -902,7 +898,7 @@ hat you can use it to dictate the behavior of the functions in the following exe
     where
       words = foldr concatWords [] sentences
       concatWords :: String -> [String] -> [String]
-      concatWords sentence words = (split sentence ' ') ++ words
+      concatWords sentence words = (split ' ' sentence) ++ words
 
   countElem :: Eq a => [a] -> a -> Int
   countElem xs c = length $ filter ((==) c) xs
