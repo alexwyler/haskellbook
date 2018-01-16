@@ -1,0 +1,7 @@
+Configuring split-0.2.3.2...
+Preprocessing library for split-0.2.3.2..
+Building library for split-0.2.3.2..
+[1 of 2] Compiling Data.List.Split.Internals ( src/Data/List/Split/Internals.hs, .stack-work/dist/x86_64-osx/Cabal-2.0.1.0/build/Data/List/Split/Internals.o )
+[2 of 2] Compiling Data.List.Split  ( src/Data/List/Split.hs, .stack-work/dist/x86_64-osx/Cabal-2.0.1.0/build/Data/List/Split.o )
+Installing library in /Users/alexwyler/.stack/snapshots/x86_64-osx/lts-10.3/8.2.2/lib/x86_64-osx-ghc-8.2.2/split-0.2.3.2-7cayvoeRj5XIrIBUB58mMy
+Registering library for split-0.2.3.2..
